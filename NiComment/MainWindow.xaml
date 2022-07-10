@@ -1,0 +1,29 @@
+﻿<Window x:Class="NiComment.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:NiComment"
+        xmlns:bh="http://schemas.microsoft.com/xaml/behaviors"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800"
+        DataContext="{StaticResource SharedViewModel}"
+        >
+    <!--<bh:Interaction.Triggers>
+        <bh:EventTrigger EventName="Loaded">
+            <bh:InvokeCommandAction Command="{Binding ShowCommentWindowCommand}"/>
+        </bh:EventTrigger>
+    </bh:Interaction.Triggers>-->
+    <StackPanel>
+        <Button Content="コメントウィンドウ表示" VerticalAlignment="Center" HorizontalAlignment="Center" Command="{Binding ShowCommentWindowCommand}"/>
+        <Button Content="米炊き" VerticalAlignment="Center" HorizontalAlignment="Center" Command="{Binding AddCommentCommand}"/>
+        <Button Content="大量米炊き" VerticalAlignment="Center" HorizontalAlignment="Center" Command="{Binding AddManyCommentsCommand}"/>
+        <ItemsControl ItemsSource="{Binding CommentSettingsQueue, Mode=OneWay}">
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding}"/>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+    </StackPanel>
+</Window>

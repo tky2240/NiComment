@@ -1,0 +1,41 @@
+﻿<Window x:Class="NiComment.CommentWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:NiComment"
+        xmlns:bh="http://schemas.microsoft.com/xaml/behaviors"
+        mc:Ignorable="d"
+        Title="CommentWindow" Height="{Binding CurrentHeight.Value, Mode=TwoWay}" Width="{Binding CurrentWidth.Value, Mode=TwoWay}"
+        AllowsTransparency="True"
+        WindowStyle="None"
+        ResizeMode="CanResizeWithGrip"
+        DataContext="{StaticResource SharedViewModel}">
+    <Window.Background>
+        <SolidColorBrush Color="#FFB0B0B0"
+                         Opacity="0.05" />
+    </Window.Background>
+    <Canvas x:Name="MainCanvas"/>
+    <!--<StackPanel>
+        <ItemsControl ItemsSource="{Binding CommentSettings, Mode=OneWay}">
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <Canvas Height="{Binding Height}">
+                        <TextBlock Foreground="{Binding TextColor}" Text="{Binding Message}" FontSize="{Binding FontSize}" Canvas.Top="{Binding Top}" >
+                            <TextBlock.Triggers>
+                                <EventTrigger RoutedEvent="TextBlock.Loaded">
+                                    <BeginStoryboard Storyboard="{Binding StoryBoard}"/>-->
+                                    <!--<BeginStoryboard >
+                                        <Storyboard Timeline.DesiredFrameRate="60">
+                                            <DoubleAnimation From="{Binding From}" To="{Binding To}" Duration="0:0:4" Storyboard.TargetProperty="(Canvas.Left)" AutoReverse="False"/>
+                                        </Storyboard>
+                                    </BeginStoryboard>-->
+                                <!--</EventTrigger>
+                            </TextBlock.Triggers>
+                        </TextBlock>
+                    </Canvas>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+    </StackPanel>-->
+</Window>
