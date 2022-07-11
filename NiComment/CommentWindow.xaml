@@ -10,7 +10,9 @@
         AllowsTransparency="True"
         WindowStyle="None"
         ResizeMode="CanResizeWithGrip"
-        DataContext="{StaticResource SharedViewModel}">
+        DataContext="{StaticResource SharedViewModel}"
+        Topmost="True"
+        >
     <Window.Background>
         <SolidColorBrush Color="#FFB0B0B0"
                          Opacity="0.05" />

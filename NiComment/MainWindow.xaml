@@ -8,6 +8,7 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800"
         DataContext="{StaticResource SharedViewModel}"
+        Topmost="True"
         >
     <!--<bh:Interaction.Triggers>
         <bh:EventTrigger EventName="Loaded">
@@ -18,6 +19,8 @@
         <Button Content="コメントウィンドウ表示" VerticalAlignment="Center" HorizontalAlignment="Center" Command="{Binding ShowCommentWindowCommand}"/>
         <Button Content="米炊き" VerticalAlignment="Center" HorizontalAlignment="Center" Command="{Binding AddCommentCommand}"/>
         <Button Content="大量米炊き" VerticalAlignment="Center" HorizontalAlignment="Center" Command="{Binding AddManyCommentsCommand}"/>
+        <Button Content="フルスクリーン切り替え" VerticalAlignment="Center" HorizontalAlignment="Center" Command="{Binding ChangeFullScreenCommand}"/>
+        <Button Content="透明度切り替え" VerticalAlignment="Center" HorizontalAlignment="Center" Command="{Binding ChangeTransparencyCommand}"/>
         <ItemsControl ItemsSource="{Binding CommentSettingsQueue, Mode=OneWay}">
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
