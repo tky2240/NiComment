@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:NiComment"
         xmlns:bh="http://schemas.microsoft.com/xaml/behaviors"
         mc:Ignorable="d"
-        Title="CommentWindow" Height="{Binding CurrentHeight.Value, Mode=TwoWay}" Width="{Binding CurrentWidth.Value, Mode=TwoWay}"
+        Title="CommentWindow" Height="200" Width="400"
         AllowsTransparency="True"
         WindowStyle="None"
         ResizeMode="CanResizeWithGrip"

@@ -9,6 +9,8 @@
         Title="MainWindow" Height="450" Width="800"
         DataContext="{StaticResource SharedViewModel}"
         Topmost="True"
+        xmlns:ui="http://schemas.modernwpf.com/2019"
+        ui:WindowHelper.UseModernWindowStyle="True"
         >
     <!--<bh:Interaction.Triggers>
         <bh:EventTrigger EventName="Loaded">

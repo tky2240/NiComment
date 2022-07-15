@@ -34,37 +34,27 @@ namespace NiComment
         public ConcurrentQueue<CommentSetting> FixedCommentSettingsQueue = new ConcurrentQueue<CommentSetting>();
         public PriorityQueue<int, int> FixedUsedLayersQueue = new PriorityQueue<int, int>();
         public SynchronizedCollection<bool> IsUsedLayers = new SynchronizedCollection<bool>();
-        public ReactiveProperty<double> CurrentHeight { get; } = new ReactiveProperty<double>();
-        public ReactiveProperty<double> CurrentWidth { get; } = new ReactiveProperty<double>();
         public ReactiveCommand ShowCommentWindowCommand { get; } = new ReactiveCommand();
         public ReactiveCommand ChangeFullScreenCommand { get; } = new ReactiveCommand();
         public ReactiveCommand ChangeTransparencyCommand { get; } = new ReactiveCommand();
         public ReactiveCommand AddCommentCommand { get; } = new ReactiveCommand();
         public ReactiveCommand AddManyCommentsCommand { get; } = new ReactiveCommand();
-        public ReactiveCommand<SizeChangedEventArgs> SizeChangedCommand { get; } = new ReactiveCommand<SizeChangedEventArgs>();
 
         public SharedViewModel()
         {
             ShowCommentWindowCommand.Subscribe(() => ShowCommentWindow());
             AddCommentCommand.Subscribe(() => ShowComment());
             AddManyCommentsCommand.Subscribe(() => AddManyComments());
-            SizeChangedCommand.Subscribe((e) => SizeChanged(e));
             ChangeFullScreenCommand.Subscribe(() => ChangeFullScreen());
             ChangeTransparencyCommand.Subscribe(() => ChangeTransparency());
             _SharedModel = new SharedModel();
-            CurrentWidth.Value = 400.0;
-            CurrentHeight.Value = 250.0;
-            UsedLayersQueue.EnsureCapacity(_CommentSlots * _CommentLayers);
-            Enumerable.Range(0, _CommentSlots * _CommentLayers).ToList().ForEach(x => UsedLayersQueue.Enqueue(x, x));
-            Enumerable.Range(0, _FixedCommentSlots * _CommentLayers).ToList().ForEach(x => FixedUsedLayersQueue.Enqueue(x, x));
-            Enumerable.Repeat(false, _CommentSlots * _CommentLayers).ToList().ForEach(x => IsUsedLayers.Add(x));
+            UsedLayersQueue.EnsureCapacity(_CommentSlots * _CommentLayers - 1);
+            FixedUsedLayersQueue.EnsureCapacity(_FixedCommentSlots * _CommentLayers - 1);
+            Enumerable.Range(0, _CommentSlots * _CommentLayers - 1).ToList().ForEach(x => UsedLayersQueue.Enqueue(x, x));
+            Enumerable.Range(0, _FixedCommentSlots * _CommentLayers - 1).ToList().ForEach(x => FixedUsedLayersQueue.Enqueue(x, x));
+            Enumerable.Repeat(false, _CommentSlots * _CommentLayers - 1).ToList().ForEach(x => IsUsedLayers.Add(x));
         }
 
-        private void SizeChanged(SizeChangedEventArgs e)
-        {
-            CurrentWidth.Value = e.NewSize.Width;
-            CurrentHeight.Value = e.NewSize.Height;
-        }
 
         private void ChangeFullScreen() {
             if(_CommentWindow.WindowState == WindowState.Normal) {
@@ -99,7 +89,9 @@ namespace NiComment
 
         private void ShowComment() {
             i += 1;
-            AddComment(new Record() { message = i.ToString(), username = "test" });
+            Record record = new Record() { message = i.ToString(), username = "test" };
+            _SharedModel.SendMessage(record);
+            //AddComment(record);
         }
 
         private async void AddManyComments() {
@@ -119,19 +111,19 @@ namespace NiComment
                         BooleanAnimationUsingKeyFrames booleanAnimationUsingKeyFrames = new BooleanAnimationUsingKeyFrames() {
                             Duration = new Duration(TimeSpan.FromSeconds(_AnimationDurationSecond)),
                         };
-                        //DoubleAnimation doubleAnimation = new DoubleAnimation(CurrentWidth.Value, -30 * record.message.Length, new Duration(TimeSpan.FromSeconds(_AnimationDurationSecond)));
+                        //DoubleAnimation doubleAnimation = new DoubleAnimation(_CommentWindow.ActualWidth, -30 * record.message.Length, new Duration(TimeSpan.FromSeconds(_AnimationDurationSecond)));
                         Storyboard.SetTargetProperty(booleanAnimationUsingKeyFrames, new PropertyPath(TextBlock.IsEnabledProperty));
                         storyboard.Children.Add(booleanAnimationUsingKeyFrames);
                         ClockGroup clockGroup = storyboard.CreateClock();
                         clockGroup.Completed += FixedCommentClockGroup_Completed;
                         TextBlock textBlock = new TextBlock() {
                             Text = record.message,
-                            FontSize = CurrentHeight.Value / _FixedCommentSlots,
+                            FontSize = _CommentWindow.ActualHeight / _FixedCommentSlots,
                             Foreground = new SolidColorBrush(Color.FromRgb(255, 0, 0)),
                             HorizontalAlignment = HorizontalAlignment.Center,
                         };
-                        Canvas.SetTop(textBlock, CurrentHeight.Value / _FixedCommentSlots * (emptyLayerIndex % _FixedCommentSlots) + (int)(emptyLayerIndex / _FixedCommentSlots) * CurrentHeight.Value / _FixedCommentSlots / 2);
-                        Canvas.SetLeft(textBlock, (CurrentWidth.Value - CurrentHeight.Value / _FixedCommentSlots * record.message.Length) /2);
+                        Canvas.SetTop(textBlock, _CommentWindow.ActualHeight / _FixedCommentSlots * (emptyLayerIndex % _FixedCommentSlots) + (int)(emptyLayerIndex / _FixedCommentSlots) * _CommentWindow.ActualHeight / _FixedCommentSlots / 2);
+                        Canvas.SetLeft(textBlock, (_CommentWindow.ActualWidth - _CommentWindow.ActualHeight / _FixedCommentSlots * record.message.Length) /2);
                         _CommentCanvas.Children.Add(textBlock);
                         storyboard.Begin(textBlock, true);
                         CommentSetting commentSetting = new CommentSetting() {
@@ -158,17 +150,17 @@ namespace NiComment
                 while (true) {
                     if (UsedLayersQueue.TryDequeue(out var emptyLayerIndex, out var priority)) {
                         Storyboard storyboard = new Storyboard();
-                        DoubleAnimation doubleAnimation = new DoubleAnimation(CurrentWidth.Value, -30 * record.message.Length, new Duration(TimeSpan.FromSeconds(_AnimationDurationSecond)));
+                        DoubleAnimation doubleAnimation = new DoubleAnimation(_CommentWindow.ActualWidth, -30 * record.message.Length, new Duration(TimeSpan.FromSeconds(_AnimationDurationSecond)));
                         Storyboard.SetTargetProperty(doubleAnimation, new PropertyPath(Canvas.LeftProperty));
                         storyboard.Children.Add(doubleAnimation);
                         ClockGroup clockGroup = storyboard.CreateClock();
                         clockGroup.Completed += CommentClockGroup_Completed;
                         TextBlock textBlock = new TextBlock() {
                             Text = record.message,
-                            FontSize = CurrentHeight.Value / _CommentSlots,
+                            FontSize = _CommentWindow.ActualHeight / _CommentSlots,
                             Foreground = new SolidColorBrush(Color.FromRgb(255, 255, 0)),
                         };
-                        Canvas.SetTop(textBlock, CurrentHeight.Value / _CommentSlots * (emptyLayerIndex % _CommentSlots) + (int)(emptyLayerIndex / _CommentSlots) * CurrentHeight.Value / _CommentSlots / 2);
+                        Canvas.SetTop(textBlock, _CommentWindow.ActualHeight / _CommentSlots * (emptyLayerIndex % _CommentSlots) + (int)(emptyLayerIndex / _CommentSlots) * _CommentWindow.ActualHeight / _CommentSlots / 2);
                         _CommentCanvas.Children.Add(textBlock);
                         storyboard.Begin(textBlock, true);
                         CommentSetting commentSetting = new CommentSetting() {

@@ -6,18 +6,20 @@ using System.Text;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Timers;
 
 namespace NiComment
 {
     internal class SharedModel
     {
+        private readonly ClientWebSocket ws = new ClientWebSocket();
         public SharedModel()
         {
 
         }
         public async void ConnectWebSocket(IProgress<Record> recordProgress)
         {
-            ClientWebSocket ws = new ClientWebSocket();
+            //ClientWebSocket ws = new ClientWebSocket();
 
             //接続先エンドポイントを指定
             var uri = new Uri("ws://localhost:8080/ws");
@@ -72,6 +74,13 @@ namespace NiComment
                 recordProgress.Report(record);
                 //Console.WriteLine("> " + message);
             }
+        }
+        public async void SendMessage(Record record) {
+            var buffer = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(record));
+            var segment = new ArraySegment<byte>(buffer);
+
+            //クライアント側に文字列を送信
+            ws.SendAsync(segment, WebSocketMessageType.Text, true, CancellationToken.None);
         }
     }
 }   

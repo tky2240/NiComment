@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="ModernWpfUI" Version="0.9.6" />
     <PackageReference Include="ReactiveProperty" Version="8.1.2" />
     <PackageReference Include="ReactiveProperty.WPF" Version="8.1.2" />
     <PackageReference Include="System.ServiceModel.Primitives" Version="4.9.0" />
