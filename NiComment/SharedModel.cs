@@ -7,6 +7,8 @@ using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
+using Keycloak.Net;
+using Keycloak.Net.Models.Users;
 
 namespace NiComment
 {
@@ -17,9 +19,23 @@ namespace NiComment
         {
 
         }
-        public async void ConnectWebSocket(IProgress<Record> recordProgress)
+        public KeycloakClient ConnectKeyCloak(string userName, string password) {
+            return new KeycloakClient("hoge", "hoge", "hoge");
+        }
+        public async Task<bool> BANUser(KeycloakClient keycloakClient, string userID) {
+            User user = await keycloakClient.GetUserAsync("NiComment", userID);
+            user.Enabled = false;
+            return await keycloakClient.UpdateUserAsync("NiComment", userID, user);
+        }
+        public async Task<bool> LiftUserBan(KeycloakClient keycloakClient, string userID) {
+            User user = await keycloakClient.GetUserAsync("NiComment", userID);
+            user.Enabled = true;
+            return await keycloakClient.UpdateUserAsync("NiComment", userID, user);
+        }
+        public async void ConnectWebSocket(IProgress<Comment> commentProgress)
         {
             //ClientWebSocket ws = new ClientWebSocket();
+            
 
             //接続先エンドポイントを指定
             var uri = new Uri("ws://localhost:8080/ws");
@@ -70,13 +86,13 @@ namespace NiComment
                 }
 
                 //メッセージを取得
-                Record record = (Record)JsonSerializer.Deserialize<Record>(Encoding.UTF8.GetString(buffer, 0, count));
-                recordProgress.Report(record);
+                Comment record = (Comment)JsonSerializer.Deserialize<Comment>(Encoding.UTF8.GetString(buffer, 0, count));
+                commentProgress.Report(record);
                 //Console.WriteLine("> " + message);
             }
         }
-        public async void SendMessage(Record record) {
-            var buffer = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(record));
+        public async void SendMessage(Comment comment) {
+            var buffer = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(comment));
             var segment = new ArraySegment<byte>(buffer);
 
             //クライアント側に文字列を送信

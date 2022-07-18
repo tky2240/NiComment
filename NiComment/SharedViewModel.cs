@@ -73,13 +73,13 @@ namespace NiComment
             }
         }
 
-        private async void OnRecordProgressChanged(Record record)
+        private async void OnRecordProgressChanged(Comment comment)
         {
-            AddComment(record);
+            AddComment(comment);
         }
 
         private void ShowCommentWindow() {
-            _SharedModel.ConnectWebSocket(new Progress<Record>(OnRecordProgressChanged));
+            _SharedModel.ConnectWebSocket(new Progress<Comment>(OnRecordProgressChanged));
             CommentWindow commentWindow = new CommentWindow();
             commentWindow.Show();
             Application.Current.MainWindow.Owner = commentWindow;
@@ -89,22 +89,23 @@ namespace NiComment
 
         private void ShowComment() {
             i += 1;
-            Record record = new Record() { message = i.ToString(), username = "test" };
-            _SharedModel.SendMessage(record);
+            Comment comment = new Comment() { Message = i.ToString(), UserName = "test" };
+            _SharedModel.SendMessage(comment);
             //AddComment(record);
         }
 
         private async void AddManyComments() {
             for (int j = 0; j < 50; j++){
                 await Task.Delay(25);
-                AddComment(new Record() { message = j.ToString(), username ="test"});
-                AddComment(new Record() { message = "インテル長友", username = "test", isFixedComment = true});
+                AddComment(new Comment() { Message = j.ToString(), UserName ="test", IsFixedComment = false});
+                AddComment(new Comment() { Message = "インテル長友", UserName = "test", IsFixedComment = true});
             }
         }
 
-        private void AddComment(Record record)
+        private void AddComment(Comment comment)
         {
-            if (record.isFixedComment) {
+            Comments.AddOnScheduler(comment);
+            if (comment.IsFixedComment) {
                 while (true) {
                     if (FixedUsedLayersQueue.TryDequeue(out var emptyLayerIndex, out var priority)) {
                         Storyboard storyboard = new Storyboard();
@@ -117,18 +118,18 @@ namespace NiComment
                         ClockGroup clockGroup = storyboard.CreateClock();
                         clockGroup.Completed += FixedCommentClockGroup_Completed;
                         TextBlock textBlock = new TextBlock() {
-                            Text = record.message,
+                            Text = comment.Message,
                             FontSize = _CommentWindow.ActualHeight / _FixedCommentSlots,
                             Foreground = new SolidColorBrush(Color.FromRgb(255, 0, 0)),
                             HorizontalAlignment = HorizontalAlignment.Center,
                         };
                         Canvas.SetTop(textBlock, _CommentWindow.ActualHeight / _FixedCommentSlots * (emptyLayerIndex % _FixedCommentSlots) + (int)(emptyLayerIndex / _FixedCommentSlots) * _CommentWindow.ActualHeight / _FixedCommentSlots / 2);
-                        Canvas.SetLeft(textBlock, (_CommentWindow.ActualWidth - _CommentWindow.ActualHeight / _FixedCommentSlots * record.message.Length) /2);
+                        Canvas.SetLeft(textBlock, (_CommentWindow.ActualWidth - _CommentWindow.ActualHeight / _FixedCommentSlots * comment.Message.Length) /2);
                         _CommentCanvas.Children.Add(textBlock);
                         storyboard.Begin(textBlock, true);
                         CommentSetting commentSetting = new CommentSetting() {
-                            Message = record.message,
-                            UserName = record.username,
+                            Message = comment.Message,
+                            UserName = comment.UserName,
                             UsdeLayerIndex = emptyLayerIndex,
                             Storyboard = storyboard,
                             ClockGroup = clockGroup,
@@ -150,13 +151,13 @@ namespace NiComment
                 while (true) {
                     if (UsedLayersQueue.TryDequeue(out var emptyLayerIndex, out var priority)) {
                         Storyboard storyboard = new Storyboard();
-                        DoubleAnimation doubleAnimation = new DoubleAnimation(_CommentWindow.ActualWidth, -30 * record.message.Length, new Duration(TimeSpan.FromSeconds(_AnimationDurationSecond)));
+                        DoubleAnimation doubleAnimation = new DoubleAnimation(_CommentWindow.ActualWidth, -30 * comment.Message.Length, new Duration(TimeSpan.FromSeconds(_AnimationDurationSecond)));
                         Storyboard.SetTargetProperty(doubleAnimation, new PropertyPath(Canvas.LeftProperty));
                         storyboard.Children.Add(doubleAnimation);
                         ClockGroup clockGroup = storyboard.CreateClock();
                         clockGroup.Completed += CommentClockGroup_Completed;
                         TextBlock textBlock = new TextBlock() {
-                            Text = record.message,
+                            Text = comment.Message,
                             FontSize = _CommentWindow.ActualHeight / _CommentSlots,
                             Foreground = new SolidColorBrush(Color.FromRgb(255, 255, 0)),
                         };
@@ -164,8 +165,8 @@ namespace NiComment
                         _CommentCanvas.Children.Add(textBlock);
                         storyboard.Begin(textBlock, true);
                         CommentSetting commentSetting = new CommentSetting() {
-                            Message = record.message,
-                            UserName = record.username,
+                            Message = comment.Message,
+                            UserName = comment.UserName,
                             UsdeLayerIndex = emptyLayerIndex,
                             Storyboard = storyboard,
                             ClockGroup = clockGroup,
@@ -217,19 +218,12 @@ namespace NiComment
         }
     }
 
-    public record class Record
-    {
-        public string username { get; set; }
-        public string message { get; set; }
-        public bool isFixedComment { get; set; }
-    }
-
     public record class Comment
     {
-        public Record Record { get; set; }
-        public double From { get; set; }
-        public double To { get; set; }
-        public double Height { get; set; }
+        public string UserID { get; set; }
+        public string UserName { get; set; }
+        public string Message { get; set; }
+        public bool IsFixedComment { get; set; }
     }
 
     public record class CommentSetting {

@@ -17,18 +17,36 @@
             <bh:InvokeCommandAction Command="{Binding ShowCommentWindowCommand}"/>
         </bh:EventTrigger>
     </bh:Interaction.Triggers>-->
-    <StackPanel>
-        <Button Content="コメントウィンドウ表示" VerticalAlignment="Center" HorizontalAlignment="Center" Command="{Binding ShowCommentWindowCommand}"/>
-        <Button Content="米炊き" VerticalAlignment="Center" HorizontalAlignment="Center" Command="{Binding AddCommentCommand}"/>
-        <Button Content="大量米炊き" VerticalAlignment="Center" HorizontalAlignment="Center" Command="{Binding AddManyCommentsCommand}"/>
-        <Button Content="フルスクリーン切り替え" VerticalAlignment="Center" HorizontalAlignment="Center" Command="{Binding ChangeFullScreenCommand}"/>
-        <Button Content="透明度切り替え" VerticalAlignment="Center" HorizontalAlignment="Center" Command="{Binding ChangeTransparencyCommand}"/>
-        <ItemsControl ItemsSource="{Binding CommentSettingsQueue, Mode=OneWay}">
-            <ItemsControl.ItemTemplate>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <StackPanel Grid.Row="0" Grid.Column="0">
+            <Button Margin="5" Content="コメントウィンドウ表示" VerticalAlignment="Center" HorizontalAlignment="Center" Command="{Binding ShowCommentWindowCommand}"/>
+            <Button Margin="5" Content="米炊き" VerticalAlignment="Center" HorizontalAlignment="Center" Command="{Binding AddCommentCommand}"/>
+            <Button Margin="5" Content="大量米炊き" VerticalAlignment="Center" HorizontalAlignment="Center" Command="{Binding AddManyCommentsCommand}"/>
+            <Button Margin="5" Content="フルスクリーン切り替え" VerticalAlignment="Center" HorizontalAlignment="Center" Command="{Binding ChangeFullScreenCommand}"/>
+            <Button Margin="5" Content="透明度切り替え" VerticalAlignment="Center" HorizontalAlignment="Center" Command="{Binding ChangeTransparencyCommand}"/>
+            <Button Margin="5" Content="設定" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+            <ItemsControl ItemsSource="{Binding CommentSettingsQueue, Mode=OneWay}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding}"/>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </StackPanel>
+        <ListView Grid.Row="0" Grid.Column="1" ItemsSource="{Binding Comments}">
+            <ListView.ItemTemplate>
                 <DataTemplate>
-                    <TextBlock Text="{Binding}"/>
+                    <StackPanel>
+                        <TextBlock Text="{Binding UserName}" FontWeight="Bold"/>
+                        <TextBlock Text="{Binding Message}"/>
+                    </StackPanel>
                 </DataTemplate>
-            </ItemsControl.ItemTemplate>
-        </ItemsControl>
-    </StackPanel>
+            </ListView.ItemTemplate>
+        </ListView>
+    </Grid>
+    
 </Window>
