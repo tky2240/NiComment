@@ -8,10 +8,10 @@
     <Setting Name="Password" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
-    <Setting Name="WebSocketURI" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
+    <Setting Name="WebSocketHost" Type="System.String" Scope="User">
+      <Value Profile="(Default)">localhost</Value>
     </Setting>
-    <Setting Name="WebSocketPort" Type="System.UInt32" Scope="User">
+    <Setting Name="WebSocketPort" Type="System.UInt16" Scope="User">
       <Value Profile="(Default)">0</Value>
     </Setting>
     <Setting Name="MasterRealm" Type="System.String" Scope="User">
@@ -19,6 +19,18 @@
     </Setting>
     <Setting Name="NiCommentRealm" Type="System.String" Scope="User">
       <Value Profile="(Default)">NiComment</Value>
+    </Setting>
+    <Setting Name="WebSocketPath" Type="System.String" Scope="User">
+      <Value Profile="(Default)">/ws</Value>
+    </Setting>
+    <Setting Name="KeycloakHost" Type="System.String" Scope="User">
+      <Value Profile="(Default)">localhost</Value>
+    </Setting>
+    <Setting Name="KeycloakPort" Type="System.UInt16" Scope="User">
+      <Value Profile="(Default)">0</Value>
+    </Setting>
+    <Setting Name="AdminCliSecret" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
     </Setting>
   </Settings>
 </SettingsFile>

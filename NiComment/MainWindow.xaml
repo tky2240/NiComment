@@ -11,12 +11,13 @@
         Topmost="True"
         xmlns:ui="http://schemas.modernwpf.com/2019"
         ui:WindowHelper.UseModernWindowStyle="True"
+        x:Name="CommentListWindow"
         >
-    <!--<bh:Interaction.Triggers>
-        <bh:EventTrigger EventName="Loaded">
-            <bh:InvokeCommandAction Command="{Binding ShowCommentWindowCommand}"/>
+    <bh:Interaction.Triggers>
+        <bh:EventTrigger EventName="Closed">
+            <bh:InvokeCommandAction Command="{Binding ClosedCommand}"/>
         </bh:EventTrigger>
-    </bh:Interaction.Triggers>-->
+    </bh:Interaction.Triggers>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
@@ -28,22 +29,24 @@
             <Button Margin="5" Content="大量米炊き" VerticalAlignment="Center" HorizontalAlignment="Center" Command="{Binding AddManyCommentsCommand}"/>
             <Button Margin="5" Content="フルスクリーン切り替え" VerticalAlignment="Center" HorizontalAlignment="Center" Command="{Binding ChangeFullScreenCommand}"/>
             <Button Margin="5" Content="透明度切り替え" VerticalAlignment="Center" HorizontalAlignment="Center" Command="{Binding ChangeTransparencyCommand}"/>
-            <Button Margin="5" Content="設定" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-            <ItemsControl ItemsSource="{Binding CommentSettingsQueue, Mode=OneWay}">
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <TextBlock Text="{Binding}"/>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
+            <Button Margin="5" Content="設定" VerticalAlignment="Center" HorizontalAlignment="Center" Command="{Binding ShowSettingWindowCommand}"/>
         </StackPanel>
-        <ListView Grid.Row="0" Grid.Column="1" ItemsSource="{Binding Comments}">
+        <ListView Grid.Row="0" Grid.Column="1" ItemsSource="{Binding Comments}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" HorizontalContentAlignment="Stretch">
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <StackPanel>
-                        <TextBlock Text="{Binding UserName}" FontWeight="Bold"/>
-                        <TextBlock Text="{Binding Message}"/>
-                    </StackPanel>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="4*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Margin="5,5,5,0" Grid.Row="0" Grid.Column="0" Text="{Binding UserName}"  HorizontalAlignment="Stretch" FontWeight="Bold" TextWrapping="Wrap"/>
+                        <TextBlock Margin="5,0,5,5" Grid.Row="1" Grid.Column="0" Text="{Binding Message}" HorizontalAlignment="Stretch" TextWrapping="Wrap"/>
+                        <Button Margin="5" Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" Content="ブロック" Command="{Binding ElementName=CommentListWindow, Path=DataContext.BanUserCommand}" CommandParameter="{Binding .}"/>
+                    </Grid>
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>

@@ -6,7 +6,11 @@
         xmlns:local="clr-namespace:NiComment"
         xmlns:bh="http://schemas.microsoft.com/xaml/behaviors"
         mc:Ignorable="d"
-        Title="SettingWindow" Height="450" Width="800">
+        Title="SettingWindow" Height="450" Width="800"
+        Topmost="True"
+        Name="SettingWindowInstance"
+        xmlns:ui="http://schemas.modernwpf.com/2019"
+        ui:WindowHelper.UseModernWindowStyle="True">
     <Window.DataContext>
         <local:SettingWindowViewModel/>
     </Window.DataContext>
@@ -28,18 +32,34 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <TextBlock Margin="5" Grid.Row="0" Grid.Column="0" Text="Keycloak管理者ユーザー名" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-        <TextBox Margin="5" Grid.Row="0" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Stretch"/>
-        <TextBlock Margin="5" Grid.Row="1" Grid.Column="0" Text="Keycloak管理者パスワード" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-        <PasswordBox x:Name="PasswordBox" Margin="5" Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Stretch"/>
-        <TextBlock Margin="5" Grid.Row="2" Grid.Column="0" Text="Keycloak投稿用Realm" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-        <TextBox Margin="5" Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Stretch"/>
-        <TextBlock Margin="5" Grid.Row="3" Grid.Column="0" Text="KeycloakRealm" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-        <TextBox Margin="5" Grid.Row="3" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Stretch"/>
-        <TextBlock Margin="5" Grid.Row="4" Grid.Column="0" Text="WebSocketURI" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-        <TextBox Margin="5" Grid.Row="4" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Stretch"/>
-        <TextBlock Margin="5" Grid.Row="5" Grid.Column="0" Text="WebSocketPort" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-        <TextBox Margin="5" Grid.Row="5" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Stretch"/>
+        <TextBlock Margin="5" Grid.Row="0" Grid.Column="0" Text="KeycloakHost" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+        <TextBox Margin="5" Grid.Row="0" Grid.Column="1" Text="{Binding KeycloakHost.Value}" VerticalAlignment="Center" HorizontalAlignment="Stretch"/>
+        <TextBlock Margin="5" Grid.Row="1" Grid.Column="0" Text="KeycloakPort" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+        <TextBox Margin="5" Grid.Row="1" Grid.Column="1" Text="{Binding KeycloakPort.Value}" VerticalAlignment="Center" HorizontalAlignment="Stretch"/>
+        <TextBlock Margin="5" Grid.Row="2" Grid.Column="0" Text="Keycloak管理者ユーザー名" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+        <TextBox Margin="5" Grid.Row="2" Grid.Column="1" Text="{Binding UserName.Value}" VerticalAlignment="Center" HorizontalAlignment="Stretch"/>
+        <TextBlock Margin="5" Grid.Row="3" Grid.Column="0" Text="Keycloak管理者パスワード" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+        <PasswordBox x:Name="PasswordBox" Margin="5" Grid.Row="3" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Stretch"/>
+        <TextBlock Margin="5" Grid.Row="4" Grid.Column="0" Text="Keycloak管理用Realm" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+        <TextBox Margin="5" Grid.Row="4" Grid.Column="1" Text="{Binding MasterRealm.Value}" VerticalAlignment="Center" HorizontalAlignment="Stretch"/>
+        <TextBlock Margin="5" Grid.Row="5" Grid.Column="0" Text="Keycloak投稿用Realm" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+        <TextBox Margin="5" Grid.Row="5" Grid.Column="1" Text="{Binding NiCommentRealm.Value}" VerticalAlignment="Center" HorizontalAlignment="Stretch"/>
+        <TextBlock Margin="5" Grid.Row="6" Grid.Column="0" Text="WebSocketHost" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+        <TextBox Margin="5" Grid.Row="6" Grid.Column="1" Text="{Binding WebSocketHost.Value}" VerticalAlignment="Center" HorizontalAlignment="Stretch"/>
+        <TextBlock Margin="5" Grid.Row="7" Grid.Column="0" Text="WebSocketPath" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+        <TextBox Margin="5" Grid.Row="7" Grid.Column="1" Text="{Binding WebSocketPath.Value}" VerticalAlignment="Center" HorizontalAlignment="Stretch"/>
+        <TextBlock Margin="5" Grid.Row="8" Grid.Column="0" Text="WebSocketPort" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+        <TextBox Margin="5" Grid.Row="8" Grid.Column="1" Text="{Binding WebSocketPort.Value}" VerticalAlignment="Center" HorizontalAlignment="Stretch"/>
+        <TextBlock Margin="5" Grid.Row="9" Grid.Column="0" Text="AdminCliSecret" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+        <TextBox Margin="5" Grid.Row="9" Grid.Column="1" Text="{Binding AdminCliSecret.Value}" VerticalAlignment="Center" HorizontalAlignment="Stretch"/>
+        <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.Row="10" Grid.ColumnSpan="2" VerticalAlignment="Center" HorizontalAlignment="Center">
+            <Button Margin="5" Content="登録" Command="{Binding RegisterSettingsCommand}" CommandParameter="{Binding ElementName=SettingWindowInstance}"/>
+            <Button Margin="5" Content="戻る" Command="{Binding CloseWindowCommand}" CommandParameter="{Binding ElementName=SettingWindowInstance}"/>
+        </StackPanel>
     </Grid>
 </Window>

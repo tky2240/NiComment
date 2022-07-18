@@ -49,22 +49,22 @@ namespace NiComment.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string WebSocketURI {
+        [global::System.Configuration.DefaultSettingValueAttribute("localhost")]
+        public string WebSocketHost {
             get {
-                return ((string)(this["WebSocketURI"]));
+                return ((string)(this["WebSocketHost"]));
             }
             set {
-                this["WebSocketURI"] = value;
+                this["WebSocketHost"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public uint WebSocketPort {
+        public ushort WebSocketPort {
             get {
-                return ((uint)(this["WebSocketPort"]));
+                return ((ushort)(this["WebSocketPort"]));
             }
             set {
                 this["WebSocketPort"] = value;
@@ -92,6 +92,54 @@ namespace NiComment.Properties {
             }
             set {
                 this["NiCommentRealm"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("/ws")]
+        public string WebSocketPath {
+            get {
+                return ((string)(this["WebSocketPath"]));
+            }
+            set {
+                this["WebSocketPath"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("localhost")]
+        public string KeycloakHost {
+            get {
+                return ((string)(this["KeycloakHost"]));
+            }
+            set {
+                this["KeycloakHost"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public ushort KeycloakPort {
+            get {
+                return ((ushort)(this["KeycloakPort"]));
+            }
+            set {
+                this["KeycloakPort"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string AdminCliSecret {
+            get {
+                return ((string)(this["AdminCliSecret"]));
+            }
+            set {
+                this["AdminCliSecret"] = value;
             }
         }
     }

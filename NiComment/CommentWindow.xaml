@@ -15,7 +15,7 @@
         >
     <Window.Background>
         <SolidColorBrush Color="#FFB0B0B0"
-                         Opacity="0.05" />
+                         Opacity="0.8" />
     </Window.Background>
     <Canvas x:Name="MainCanvas"/>
     <!--<StackPanel>

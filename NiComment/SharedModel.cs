@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Timers;
 using Keycloak.Net;
 using Keycloak.Net.Models.Users;
+using NiComment.Properties;
 
 namespace NiComment
 {
@@ -20,25 +21,28 @@ namespace NiComment
 
         }
         public KeycloakClient ConnectKeyCloak(string userName, string password) {
-            return new KeycloakClient("hoge", "hoge", "hoge");
+            Settings settings = Settings.Default;
+            return new KeycloakClient($"http://{settings.KeycloakHost}:{settings.KeycloakPort}", userName, password);
         }
         public async Task<bool> BANUser(KeycloakClient keycloakClient, string userID) {
-            User user = await keycloakClient.GetUserAsync("NiComment", userID);
+            Settings settings = Settings.Default;
+            User user = await keycloakClient.GetUserAsync(settings.NiCommentRealm, userID);
             user.Enabled = false;
-            return await keycloakClient.UpdateUserAsync("NiComment", userID, user);
+            return await keycloakClient.UpdateUserAsync(settings.NiCommentRealm, userID, user);
         }
         public async Task<bool> LiftUserBan(KeycloakClient keycloakClient, string userID) {
-            User user = await keycloakClient.GetUserAsync("NiComment", userID);
+            Settings settings = Settings.Default;
+            User user = await keycloakClient.GetUserAsync(settings.NiCommentRealm, userID);
             user.Enabled = true;
-            return await keycloakClient.UpdateUserAsync("NiComment", userID, user);
+            return await keycloakClient.UpdateUserAsync(settings.NiCommentRealm, userID, user);
         }
         public async void ConnectWebSocket(IProgress<Comment> commentProgress)
         {
             //ClientWebSocket ws = new ClientWebSocket();
-            
 
+            Settings settings = Settings.Default;
             //接続先エンドポイントを指定
-            var uri = new Uri("ws://localhost:8080/ws");
+            var uri = new Uri($"ws://{settings.WebSocketHost}:{settings.WebSocketPort}{settings.WebSocketPath}?ID=master");
 
             //サーバに対し、接続を開始
             await ws.ConnectAsync(uri, CancellationToken.None);
@@ -86,7 +90,7 @@ namespace NiComment
                 }
 
                 //メッセージを取得
-                Comment record = (Comment)JsonSerializer.Deserialize<Comment>(Encoding.UTF8.GetString(buffer, 0, count));
+                Comment record = JsonSerializer.Deserialize<Comment>(Encoding.UTF8.GetString(buffer, 0, count));
                 commentProgress.Report(record);
                 //Console.WriteLine("> " + message);
             }

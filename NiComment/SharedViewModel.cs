@@ -13,6 +13,8 @@ using System.Windows;
 using System.Windows.Media.Animation;
 using System.Windows.Media;
 using System.Windows.Controls;
+using NiComment.Properties;
+using NiComment.Keycloak;
 
 namespace NiComment
 {
@@ -25,10 +27,12 @@ namespace NiComment
         private readonly int _FixedCommentSlots = 10;
         private readonly int _CommentLayers = 2;
         private readonly int _AnimationDurationSecond = 4;
+        private readonly int _AnimationDurationMinute = 5;
+        private KeycloakClient _KeycloakClient = null;
         private Canvas _CommentCanvas = null;
         private Window _CommentWindow = null;
         public ReactiveCollection<Comment> Comments { get; } = new ReactiveCollection<Comment>();
-        public ReactiveCollection<CommentSetting> CommentSettings { get; } = new ReactiveCollection<CommentSetting>();
+        //public ReactiveCollection<CommentSetting> CommentSettings { get; } = new ReactiveCollection<CommentSetting>();
         public ConcurrentQueue<CommentSetting> CommentSettingsQueue = new ConcurrentQueue<CommentSetting>();
         public PriorityQueue<int, int> UsedLayersQueue = new PriorityQueue<int, int>();
         public ConcurrentQueue<CommentSetting> FixedCommentSettingsQueue = new ConcurrentQueue<CommentSetting>();
@@ -37,8 +41,11 @@ namespace NiComment
         public ReactiveCommand ShowCommentWindowCommand { get; } = new ReactiveCommand();
         public ReactiveCommand ChangeFullScreenCommand { get; } = new ReactiveCommand();
         public ReactiveCommand ChangeTransparencyCommand { get; } = new ReactiveCommand();
+        public ReactiveCommand<Comment> BanUserCommand { get; } = new ReactiveCommand<Comment>();
         public ReactiveCommand AddCommentCommand { get; } = new ReactiveCommand();
         public ReactiveCommand AddManyCommentsCommand { get; } = new ReactiveCommand();
+        public ReactiveCommand ShowSettingWindowCommand { get; } = new ReactiveCommand();
+        public ReactiveCommand ClosedCommand { get; } = new ReactiveCommand();
 
         public SharedViewModel()
         {
@@ -53,8 +60,15 @@ namespace NiComment
             Enumerable.Range(0, _CommentSlots * _CommentLayers - 1).ToList().ForEach(x => UsedLayersQueue.Enqueue(x, x));
             Enumerable.Range(0, _FixedCommentSlots * _CommentLayers - 1).ToList().ForEach(x => FixedUsedLayersQueue.Enqueue(x, x));
             Enumerable.Repeat(false, _CommentSlots * _CommentLayers - 1).ToList().ForEach(x => IsUsedLayers.Add(x));
+            ShowSettingWindowCommand.Subscribe(() => ShowSettingWindow());
+            BanUserCommand.Subscribe((comment) => BanUser(comment));
+            ClosedCommand.Subscribe(() => ClosedWindow());
         }
 
+        private void ShowSettingWindow() {
+            SettingWindow settingWindow = new SettingWindow();
+            settingWindow.Show();
+        }
 
         private void ChangeFullScreen() {
             if(_CommentWindow.WindowState == WindowState.Normal) {
@@ -67,10 +81,21 @@ namespace NiComment
         private void ChangeTransparency() {
             Brush background = _CommentWindow.Background;
             if(background.Opacity == 0) {
-                background.Opacity = 0.05;
+                background.Opacity = 0.8;
             } else {
                 background.Opacity = 0;
             }
+        }
+
+        private async void BanUser(Comment comment) {
+            if (MessageBox.Show($"ユーザー:{comment.UserName}をブロックしますか？", "確認", MessageBoxButton.YesNo) == MessageBoxResult.Yes ){
+                if(await _KeycloakClient.BanUser(Settings.Default.Password, comment.UserID)){
+                    MessageBox.Show("成功しました");
+                } else {
+                    MessageBox.Show("失敗しました");
+                }
+            }
+            
         }
 
         private async void OnRecordProgressChanged(Comment comment)
@@ -79,6 +104,11 @@ namespace NiComment
         }
 
         private void ShowCommentWindow() {
+            if (_CommentWindow != null) {
+                MessageBox.Show("コメントウィンドウの複数起動はできません");
+                return;
+            }
+            _KeycloakClient = new KeycloakClient(Settings.Default.AdminCliSecret, "admin-cli", Settings.Default.UserName);
             _SharedModel.ConnectWebSocket(new Progress<Comment>(OnRecordProgressChanged));
             CommentWindow commentWindow = new CommentWindow();
             commentWindow.Show();
@@ -215,6 +245,12 @@ namespace NiComment
                 return;
             }
             IsUsedLayers[oldestCommentSetting.UsdeLayerIndex] = false;
+        }
+
+        private void ClosedWindow() {
+            if(_CommentWindow != null) {
+                _CommentWindow.Close();
+            }
         }
     }
 
