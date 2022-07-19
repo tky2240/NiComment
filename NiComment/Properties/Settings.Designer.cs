@@ -25,7 +25,7 @@ namespace NiComment.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        [global::System.Configuration.DefaultSettingValueAttribute("admin")]
         public string UserName {
             get {
                 return ((string)(this["UserName"]));
@@ -37,7 +37,7 @@ namespace NiComment.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        [global::System.Configuration.DefaultSettingValueAttribute("admin")]
         public string Password {
             get {
                 return ((string)(this["Password"]));
