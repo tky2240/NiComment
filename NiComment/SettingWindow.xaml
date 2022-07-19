@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:NiComment"
         xmlns:bh="http://schemas.microsoft.com/xaml/behaviors"
         mc:Ignorable="d"
-        Title="SettingWindow" Height="450" Width="800"
+        Title="SettingWindow" Height="550" Width="800"
         Topmost="True"
         Name="SettingWindowInstance"
         xmlns:ui="http://schemas.modernwpf.com/2019"

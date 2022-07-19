@@ -25,10 +25,9 @@
         </Grid.ColumnDefinitions>
         <StackPanel Grid.Row="0" Grid.Column="0">
             <Button Margin="5" Content="コメントウィンドウ表示" VerticalAlignment="Center" HorizontalAlignment="Center" Command="{Binding ShowCommentWindowCommand}"/>
-            <Button Margin="5" Content="米炊き" VerticalAlignment="Center" HorizontalAlignment="Center" Command="{Binding AddCommentCommand}"/>
-            <Button Margin="5" Content="大量米炊き" VerticalAlignment="Center" HorizontalAlignment="Center" Command="{Binding AddManyCommentsCommand}"/>
             <Button Margin="5" Content="フルスクリーン切り替え" VerticalAlignment="Center" HorizontalAlignment="Center" Command="{Binding ChangeFullScreenCommand}"/>
             <Button Margin="5" Content="透明度切り替え" VerticalAlignment="Center" HorizontalAlignment="Center" Command="{Binding ChangeTransparencyCommand}"/>
+            <Button Margin="5" Content="再接続" VerticalAlignment="Center" HorizontalAlignment="Center" Command="{Binding ReConnectWebSocketCommand}"/>
             <Button Margin="5" Content="設定" VerticalAlignment="Center" HorizontalAlignment="Center" Command="{Binding ShowSettingWindowCommand}"/>
         </StackPanel>
         <ListView Grid.Row="0" Grid.Column="1" ItemsSource="{Binding Comments}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" HorizontalContentAlignment="Stretch">

@@ -18,26 +18,4 @@
                          Opacity="0.8" />
     </Window.Background>
     <Canvas x:Name="MainCanvas"/>
-    <!--<StackPanel>
-        <ItemsControl ItemsSource="{Binding CommentSettings, Mode=OneWay}">
-            <ItemsControl.ItemTemplate>
-                <DataTemplate>
-                    <Canvas Height="{Binding Height}">
-                        <TextBlock Foreground="{Binding TextColor}" Text="{Binding Message}" FontSize="{Binding FontSize}" Canvas.Top="{Binding Top}" >
-                            <TextBlock.Triggers>
-                                <EventTrigger RoutedEvent="TextBlock.Loaded">
-                                    <BeginStoryboard Storyboard="{Binding StoryBoard}"/>-->
-                                    <!--<BeginStoryboard >
-                                        <Storyboard Timeline.DesiredFrameRate="60">
-                                            <DoubleAnimation From="{Binding From}" To="{Binding To}" Duration="0:0:4" Storyboard.TargetProperty="(Canvas.Left)" AutoReverse="False"/>
-                                        </Storyboard>
-                                    </BeginStoryboard>-->
-                                <!--</EventTrigger>
-                            </TextBlock.Triggers>
-                        </TextBlock>
-                    </Canvas>
-                </DataTemplate>
-            </ItemsControl.ItemTemplate>
-        </ItemsControl>
-    </StackPanel>-->
 </Window>
