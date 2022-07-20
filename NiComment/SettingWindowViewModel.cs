@@ -49,16 +49,14 @@ namespace NiComment {
         private void RegisterSettings(SettingWindow window) {
             (bool IsEmpty, string Message)[] checkEmpties = {
                 (string.IsNullOrWhiteSpace(KeycloakHost.Value?.Trim()), "Keycloakホストが空欄です"),
-                (!ushort.TryParse(KeycloakPort.Value, out _), "Keycloakポートが不正です"),
-                (ushort.TryParse(KeycloakPort.Value, out ushort keyCloakPort) ? keyCloakPort < 1024 : true, "KeycloakポートにWell-Knownポートは指定できません"),
+                (!ushort.TryParse(KeycloakPort.Value, out ushort keycloakPort), "Keycloakポートが不正です"),
                 (string.IsNullOrWhiteSpace(UserName.Value?.Trim()), "ユーザー名が空欄です"),
                 (string.IsNullOrWhiteSpace(window.PasswordBox.Password), "パスワードが空欄です"),
                 (string.IsNullOrWhiteSpace(MasterRealm.Value?.Trim()), "管理用Realmが空欄です"),
                 (string.IsNullOrWhiteSpace(NiCommentRealm.Value?.Trim()), "投稿用Realmが空欄です"),
                 (string.IsNullOrWhiteSpace(WebSocketHost.Value?.Trim()), "WebSocketホストが空欄です"),
                 (string.IsNullOrWhiteSpace(WebSocketPath.Value?.Trim()), "WebSocketパスが空欄です"),
-                (!ushort.TryParse(WebSocketPort.Value, out _), "WebSocketポートが不正です"),
-                (ushort.TryParse(WebSocketPort.Value, out ushort webSocketPort) ? webSocketPort < 1024 : true, "WebSocketポートにWell-Knownポートは指定できません"),
+                (!ushort.TryParse(WebSocketPort.Value, out ushort webSocketPort), "WebSocketポートが不正です"),
                 (string.IsNullOrWhiteSpace(AdminCliSecret.Value?.Trim()), "AdminCliSecretが空欄です"),
             };
             foreach((bool IsEmpty, string Message) checkEmpty in checkEmpties) {
@@ -69,7 +67,7 @@ namespace NiComment {
             }
             Settings currentSettings = Settings.Default;
             currentSettings.KeycloakHost = KeycloakHost.Value.Trim();
-            currentSettings.KeycloakPort = keyCloakPort;
+            currentSettings.KeycloakPort = keycloakPort;
             currentSettings.UserName = UserName.Value.Trim();
             currentSettings.Password = window.PasswordBox.Password;
             currentSettings.WebSocketHost = WebSocketHost.Value.Trim();

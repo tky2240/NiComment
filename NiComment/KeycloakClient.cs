@@ -25,23 +25,28 @@ namespace NiComment.Keycloak {
         //ref:https://curl.olsh.me/
         public async Task<string> GetTokenAsync(string password) {
             NiComment.Properties.Settings settings = NiComment.Properties.Settings.Default;
-            using (HttpClient httpClient = new HttpClient()) {
-                using (HttpRequestMessage request = new HttpRequestMessage(new HttpMethod("POST"), $"http://{settings.KeycloakHost}:{settings.KeycloakPort}/realms/{settings.MasterRealm}/protocol/openid-connect/token")) {
-                    List<string> contentList = new List<string>();
-                    contentList.Add($"client_secret={_ClientSecret}");
-                    contentList.Add($"client_id={_ClientID}");
-                    contentList.Add($"username={_UserName}");
-                    contentList.Add($"password={password}");
-                    contentList.Add("grant_type=password");
-                    request.Content = new StringContent(string.Join("&", contentList));
-                    request.Content.Headers.ContentType = MediaTypeHeaderValue.Parse("application/x-www-form-urlencoded");
+            try {
+                using (HttpClient httpClient = new HttpClient()) {
+                    using (HttpRequestMessage request = new HttpRequestMessage(new HttpMethod("POST"), $"http://{settings.KeycloakHost}:{settings.KeycloakPort}/auth/realms/{settings.MasterRealm}/protocol/openid-connect/token")) {
+                        List<string> contentList = new List<string>();
+                        contentList.Add($"client_secret={_ClientSecret}");
+                        contentList.Add($"client_id={_ClientID}");
+                        contentList.Add($"username={_UserName}");
+                        contentList.Add($"password={password}");
+                        contentList.Add("grant_type=password");
+                        request.Content = new StringContent(string.Join("&", contentList));
+                        request.Content.Headers.ContentType = MediaTypeHeaderValue.Parse("application/x-www-form-urlencoded");
 
-                    HttpResponseMessage response = await httpClient.SendAsync(request);
-                    AccessTokenInformation accessTokenInformation = JsonSerializer.Deserialize<AccessTokenInformation>(await response.Content.ReadAsStringAsync());
-                    //_AccessToken = accessTokenInformation.access_token;
-                    return accessTokenInformation.access_token;
+                        HttpResponseMessage response = await httpClient.SendAsync(request);
+                        AccessTokenInformation accessTokenInformation = JsonSerializer.Deserialize<AccessTokenInformation>(await response.Content.ReadAsStringAsync());
+                        //_AccessToken = accessTokenInformation.access_token;
+                        return accessTokenInformation.access_token;
+                    }
                 }
+            } catch {
+                return string.Empty;
             }
+            
         }
 
         public async Task<bool> BanUser(string password, string userID) {
@@ -49,29 +54,34 @@ namespace NiComment.Keycloak {
             if (string.IsNullOrWhiteSpace(accessToken)) {
                 return false;
             }
-            NiComment.Properties.Settings settings = NiComment.Properties.Settings.Default;
-            using (HttpClient httpClient = new HttpClient()) {
-                string uri = $"http://{settings.KeycloakHost}:{settings.KeycloakPort}/admin/realms/{settings.NiCommentRealm}/users/{userID}";
-                HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Put, uri);
-                //request.Headers.Add("Content-Type", "application/json");
-                //request.Headers.Add("Authorization", $"bearer {accessToken}");
-                request.Content = new StringContent(JsonSerializer.Serialize(new User() { enabled = false }), Encoding.UTF8, "application/json");
-                request.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-                request.Headers.Add("Authorization", $"bearer {accessToken}");
-                //request.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-                HttpResponseMessage response = await httpClient.SendAsync(request);
-                //httpClient.PutAsync( new HttpRequestMessage());
-                if (response.StatusCode != HttpStatusCode.NoContent){
-                    return false;
-                }
-            }
-            using (HttpClient httpClient = new HttpClient()) {
-                using (HttpRequestMessage request = new HttpRequestMessage(new HttpMethod("POST"), $"http://{settings.WebSocketHost}:{settings.WebSocketPort}/api/close?ID={userID}")) {
-
+            try {
+                NiComment.Properties.Settings settings = NiComment.Properties.Settings.Default;
+                using (HttpClient httpClient = new HttpClient()) {
+                    string uri = $"http://{settings.KeycloakHost}:{settings.KeycloakPort}/auth/admin/realms/{settings.NiCommentRealm}/users/{userID}";
+                    HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Put, uri);
+                    //request.Headers.Add("Content-Type", "application/json");
+                    //request.Headers.Add("Authorization", $"bearer {accessToken}");
+                    request.Content = new StringContent(JsonSerializer.Serialize(new User() { enabled = false }), Encoding.UTF8, "application/json");
+                    request.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+                    request.Headers.Add("Authorization", $"bearer {accessToken}");
+                    //request.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
                     HttpResponseMessage response = await httpClient.SendAsync(request);
-                    return response.StatusCode == HttpStatusCode.OK;
+                    //httpClient.PutAsync( new HttpRequestMessage());
+                    if (response.StatusCode != HttpStatusCode.NoContent) {
+                        return false;
+                    }
                 }
+                using (HttpClient httpClient = new HttpClient()) {
+                    using (HttpRequestMessage request = new HttpRequestMessage(new HttpMethod("POST"), $"http://{settings.WebSocketHost}:{settings.WebSocketPort}/api/close?ID={userID}")) {
+
+                        HttpResponseMessage response = await httpClient.SendAsync(request);
+                        return response.StatusCode == HttpStatusCode.OK;
+                    }
+                }
+            } catch {
+                return false;
             }
+            
         }
 
     }

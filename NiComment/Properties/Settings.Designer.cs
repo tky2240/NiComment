@@ -61,7 +61,7 @@ namespace NiComment.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        [global::System.Configuration.DefaultSettingValueAttribute("80")]
         public ushort WebSocketPort {
             get {
                 return ((ushort)(this["WebSocketPort"]));
@@ -121,7 +121,7 @@ namespace NiComment.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        [global::System.Configuration.DefaultSettingValueAttribute("80")]
         public ushort KeycloakPort {
             get {
                 return ((ushort)(this["KeycloakPort"]));
@@ -133,7 +133,7 @@ namespace NiComment.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        [global::System.Configuration.DefaultSettingValueAttribute("xgMZZY0WLzeqOFIgdfk1LqO7Wg8pzWg7")]
         public string AdminCliSecret {
             get {
                 return ((string)(this["AdminCliSecret"]));
