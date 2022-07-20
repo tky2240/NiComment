@@ -73,7 +73,7 @@ namespace NiComment.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Master")]
+        [global::System.Configuration.DefaultSettingValueAttribute("master")]
         public string MasterRealm {
             get {
                 return ((string)(this["MasterRealm"]));

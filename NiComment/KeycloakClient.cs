@@ -9,6 +9,7 @@ using System.Net.Http.Headers;
 using System.Text.Json;
 using System.Net.Mime;
 using NiComment.Properties;
+using System.Windows;
 
 namespace NiComment.Keycloak {
     internal class KeycloakClient {
@@ -39,11 +40,12 @@ namespace NiComment.Keycloak {
 
                         HttpResponseMessage response = await httpClient.SendAsync(request);
                         AccessTokenInformation accessTokenInformation = JsonSerializer.Deserialize<AccessTokenInformation>(await response.Content.ReadAsStringAsync());
-                        //_AccessToken = accessTokenInformation.access_token;
                         return accessTokenInformation.access_token;
                     }
                 }
-            } catch {
+            } catch (Exception exception) {
+                MessageBox.Show("トークンの取得に失敗しました");
+                MessageBox.Show(exception.StackTrace, exception.Message);
                 return string.Empty;
             }
             
@@ -59,15 +61,12 @@ namespace NiComment.Keycloak {
                 using (HttpClient httpClient = new HttpClient()) {
                     string uri = $"http://{settings.KeycloakHost}:{settings.KeycloakPort}/auth/admin/realms/{settings.NiCommentRealm}/users/{userID}";
                     HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Put, uri);
-                    //request.Headers.Add("Content-Type", "application/json");
-                    //request.Headers.Add("Authorization", $"bearer {accessToken}");
                     request.Content = new StringContent(JsonSerializer.Serialize(new User() { enabled = false }), Encoding.UTF8, "application/json");
                     request.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
                     request.Headers.Add("Authorization", $"bearer {accessToken}");
-                    //request.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
                     HttpResponseMessage response = await httpClient.SendAsync(request);
-                    //httpClient.PutAsync( new HttpRequestMessage());
                     if (response.StatusCode != HttpStatusCode.NoContent) {
+                        MessageBox.Show("ユーザーのブロックに失敗しました");
                         return false;
                     }
                 }
@@ -75,10 +74,15 @@ namespace NiComment.Keycloak {
                     using (HttpRequestMessage request = new HttpRequestMessage(new HttpMethod("POST"), $"http://{settings.WebSocketHost}:{settings.WebSocketPort}/api/close?ID={userID}")) {
 
                         HttpResponseMessage response = await httpClient.SendAsync(request);
-                        return response.StatusCode == HttpStatusCode.OK;
+                        if (response.StatusCode != HttpStatusCode.OK) {
+                            MessageBox.Show("Websocketのクローズに失敗しました"); ;
+                            return false;
+                        }
+                        return true;
                     }
                 }
-            } catch {
+            } catch (Exception exception){
+                MessageBox.Show(exception.StackTrace, exception.Message);
                 return false;
             }
             

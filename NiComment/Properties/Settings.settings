@@ -15,7 +15,7 @@
       <Value Profile="(Default)">80</Value>
     </Setting>
     <Setting Name="MasterRealm" Type="System.String" Scope="User">
-      <Value Profile="(Default)">Master</Value>
+      <Value Profile="(Default)">master</Value>
     </Setting>
     <Setting Name="NiCommentRealm" Type="System.String" Scope="User">
       <Value Profile="(Default)">NiComment</Value>

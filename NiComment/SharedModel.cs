@@ -37,7 +37,7 @@ namespace NiComment
                     var segment = new ArraySegment<byte>(buffer);
 
                     //サーバからのレスポンス情報を取得
-                    var result = await ws.ReceiveAsync(segment, CancellationToken.None);
+                        var result = await ws.ReceiveAsync(segment, CancellationToken.None);
 
                     //エンドポイントCloseの場合、処理を中断
                     if (result.MessageType == WebSocketMessageType.Close)
